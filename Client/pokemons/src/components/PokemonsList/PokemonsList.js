@@ -2,8 +2,6 @@ import React, {useState, useEffect} from 'react';
 import headerPokemonImg from '../../imgs/headerPokemon.png';
 import { NavLink } from 'react-router-dom';
 // import { MongoClient } from 'mongodb';
-import pokemonData from './pokemons.json';
-
 
 export const PokemonsList = () => {
     const [activeButton, setActiveButton] = useState('');
@@ -21,9 +19,18 @@ export const PokemonsList = () => {
     const handleButtonClick2 = buttonId => {
       setActiveButton2(buttonId);
     };
+  
     useEffect(() => {
-        setPokemons(pokemonData);
-    }, [])
+        setLoading(true);
+        fetch('/api/pokemons/mock')
+        .then((response) => response.json())
+        .then((data) => {
+            setPokemons(data);
+            setLoading(false);
+        })
+        .catch((error) => console.error(error));
+    }, []);
+
     // useEffect(() => {
     //     const uri = "mongodb+srv://kucherenkoolexiy:Alex_21@pokemondb.ukhz5ei.mongodb.net/test";
     //     const client = new MongoClient(uri);
@@ -71,20 +78,23 @@ export const PokemonsList = () => {
                 </div>
             </header>
 
-            {/* {loading && <div>Loading...</div>} {/*повідомлення завантаження*/}
-            {/* {!loading && !pokemons.length && <div>No data found!</div>} повідомлення про відсутність даних */}
+            {loading && <div>Loading...</div>}
+            {!loading && !pokemons.length && <div>No data found!</div>}
 
             <main className='cardPokemon'>
-                {/* {pokemons.map(pokemon => (
-                    <div key={pokemon._id}>{pokemon.name}</div>
-                ))} */}
-                {pokemons.map(pokemon => (
-                    <div key={pokemon.id}>
-                        {pokemon.imageUrl && <img src={pokemon.imageUrl} alt={pokemon.name} />}
-                        <h2>{pokemon.name}</h2>
-                        <p><strong>Type: </strong>{pokemon.type}</p>
-                        <p><strong>Level: </strong>{pokemon.level}</p>          
-                    </div>
+              {pokemons.map(pokemon => (
+                <div key={pokemon.id}>
+                    {pokemon.imageUrl && <img src={pokemon.imageUrl} alt={pokemon.name} />}
+                    <h2>{pokemon.name}</h2>
+                    <p>
+                    <strong>Type: </strong>
+                    {pokemon.type}
+                    </p>
+                    <p>
+                    <strong>Level: </strong>
+                    {pokemon.level}
+                    </p>
+                </div>
                 ))}
             </main>
 

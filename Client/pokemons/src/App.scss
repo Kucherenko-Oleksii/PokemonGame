@@ -70,6 +70,10 @@ body{
       height: 312px;
       border: 1px solid #C6C5C9;
       border-radius: 16px;
+
+      img{
+         transform: scale(1.5);
+      }
   }
 }
 .pokemonFooter{
