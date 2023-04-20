@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react';
 import headerPokemonImg from '../../imgs/headerPokemon.png';
 import { NavLink } from 'react-router-dom';
 // import { MongoClient } from 'mongodb';
+import pokemonData from './pokemons.json';
+
 
 export const PokemonsList = () => {
     const [activeButton, setActiveButton] = useState('');
@@ -10,14 +12,18 @@ export const PokemonsList = () => {
     const [loading, setLoading] = useState(true); //Стан для завантаження 
     const [pokemons, setPokemons] = useState([]);
 
+    const [modalVisible, setModalVisible] = useState(false); // стан для відображення модального вікна
+
     const handleButtonClick = buttonId => {
-        setActiveButton(buttonId);
-    }
-
+      setActiveButton(buttonId);
+    };
+  
     const handleButtonClick2 = buttonId => {
-        setActiveButton2(buttonId);
-    }
-
+      setActiveButton2(buttonId);
+    };
+    useEffect(() => {
+        setPokemons(pokemonData);
+    }, [])
     // useEffect(() => {
     //     const uri = "mongodb+srv://kucherenkoolexiy:Alex_21@pokemondb.ukhz5ei.mongodb.net/test";
     //     const client = new MongoClient(uri);
@@ -72,12 +78,14 @@ export const PokemonsList = () => {
                 {/* {pokemons.map(pokemon => (
                     <div key={pokemon._id}>{pokemon.name}</div>
                 ))} */}
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>            
+                {pokemons.map(pokemon => (
+                    <div key={pokemon.id}>
+                        {pokemon.imageUrl && <img src={pokemon.imageUrl} alt={pokemon.name} />}
+                        <h2>{pokemon.name}</h2>
+                        <p><strong>Type: </strong>{pokemon.type}</p>
+                        <p><strong>Level: </strong>{pokemon.level}</p>          
+                    </div>
+                ))}
             </main>
 
             <footer className='pokemonFooter'>
