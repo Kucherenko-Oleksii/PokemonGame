@@ -1,15 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
-const { PokemonSchema } = require('./models/PokemonSchema.js');
+const PokemonSchema = require('./models/PokemonSchema.js');
 
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const port = process.env.PORT || 4000;
 
-mongoose.connect('mongodb+srv://Oleksii:alex2023@cluster0.bbo9qtt.mongodb.net/test', {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect('mongodb+srv://Oleksii:alex2023@cluster0.bbo9qtt.mongodb.net/pokemonsdb', {useNewUrlParser: true, useUnifiedTopology: true});
 
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -18,12 +20,12 @@ db.once('open', () => console.log('Connected to DataBase :)'));
 
 // Пагінація:
 
-app.get("/", async (req, res) => {
+app.get("/", cors(), async (req, res) => {
   return res.json({ message: "Hello, World ✌️" });
 });
 
 // Endpoint списку покемонів
-app.get('/api/pokemons', async (req, res) => {
+app.get('/api/pokemons', cors(), async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 6;
@@ -37,23 +39,9 @@ app.get('/api/pokemons', async (req, res) => {
   }
 });
 
-const fs = require('fs');
-
-app.get('/api/pokemons/mock', (req, res) => {
-  fs.readFile('./pokemons.json', (err, data) => {
-    if (err) {
-      console.error(err);
-      res.status(500).send('Server error');
-      return;
-    }
-    const pokemons = JSON.parse(data);
-    res.send(pokemons);
-  });
-});
-
 const start = async () => {
   try {
-    app.listen(4000, () => console.log("Server started on port 4000"));
+    app.listen(port, () => console.log(`Server started on port ${port}`));
   } catch (error) {
     console.error(error);
     process.exit(1);

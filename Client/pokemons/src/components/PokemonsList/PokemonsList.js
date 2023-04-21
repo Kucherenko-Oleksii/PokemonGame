@@ -1,58 +1,38 @@
 import React, {useState, useEffect} from 'react';
 import headerPokemonImg from '../../imgs/headerPokemon.png';
 import { NavLink } from 'react-router-dom';
-// import { MongoClient } from 'mongodb';
+import axios from 'axios';
 
 export const PokemonsList = () => {
     const [activeButton, setActiveButton] = useState('');
-    const [activeButton2, setActiveButton2] = useState('');
-
     const [loading, setLoading] = useState(true); //Стан для завантаження 
     const [pokemons, setPokemons] = useState([]);
 
-    const [modalVisible, setModalVisible] = useState(false); // стан для відображення модального вікна
+    const [page, setPage] = useState(1);
 
     const handleButtonClick = buttonId => {
       setActiveButton(buttonId);
     };
   
-    const handleButtonClick2 = buttonId => {
-      setActiveButton2(buttonId);
-    };
-  
+    const handleNextClick = () => {
+        setPage(prevPage => prevPage + 1);
+    }
+
+    const handlePrevClick = () => {
+        setPage(prevPage => prevPage - 1);
+    }
     useEffect(() => {
         setLoading(true);
-        fetch('/api/pokemons/mock')
-        .then((response) => response.json())
-        .then((data) => {
-            setPokemons(data);
+        axios.get(`http://localhost:4000/api/pokemons?page=${page}&limit=6`)
+        .then(response => {
+            setPokemons(response.data);
             setLoading(false);
         })
-        .catch((error) => console.error(error));
-    }, []);
-
-    // useEffect(() => {
-    //     const uri = "mongodb+srv://kucherenkoolexiy:Alex_21@pokemondb.ukhz5ei.mongodb.net/test";
-    //     const client = new MongoClient(uri);
-    
-    //     const fetchData = async () => {
-    //         setLoading(true); // Встановлюю стан loading на початку
-    //         try {
-    //             await client.connect();
-    //             const database = client.db('pokemondb');
-    //             const collection = database.collection('pokemons');
-    //             const result = await collection.find().toArray();
-    //             setPokemons(result);
-    //         } catch (error) {
-    //             console.log(error);
-    //         } finally {
-    //             setLoading(false); // Оновлюю стан loading
-    //             await client.close();
-    //         }
-    //     };
-    
-    //     fetchData();
-    // }, []);
+        .catch(error => {
+            console.error(error);
+            setLoading(false);
+        })
+    }, [page]);
 
     return (
         <>
@@ -83,7 +63,7 @@ export const PokemonsList = () => {
 
             <main className='cardPokemon'>
               {pokemons.map(pokemon => (
-                <div key={pokemon.id}>
+                <div key={pokemon._id}>
                     {pokemon.imageUrl && <img src={pokemon.imageUrl} alt={pokemon.name} />}
                     <h2>{pokemon.name}</h2>
                     <p>
@@ -101,14 +81,16 @@ export const PokemonsList = () => {
             <footer className='pokemonFooter'>
                 <div className='buttonContainerFooter'>
                     <button
-                        className={`prevButton ${activeButton2 === 'prevButton' ? 'active' : ''}`}
-                        onClick={() => handleButtonClick2('prevButton')}
+                        className={`prevButton ${page === 'prevButton' ? 'active' : ''}`}
+                        onClick={handlePrevClick}
+                        disabled = {page === 1}
                     >
                         Prev
                     </button>
                     <button
-                        className={`nextButton ${activeButton2 === 'nextButton' ? 'active' : ''}`}
-                        onClick={() => handleButtonClick2('nextButton')}
+                        className={`nextButton ${page === 'nextButton' ? 'active' : ''}`}
+                        onClick={handleNextClick}
+                        disabled = {!pokemons || pokemons.length < 6}
                     >
                         Next
                     </button>
