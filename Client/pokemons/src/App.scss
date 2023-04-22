@@ -176,10 +176,25 @@ body{
   margin: 0 32px !important;
 }
 
+.addToMyList, .evolutionPokemon{
+  margin: 10px 0 10px 0;
+  border: none;
+  width: 155px;
+  height: 48px;
+  background: #EBA000;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.evolvePokemon{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 // 
 
 
-@media (max-width: 480px), (max-width: 768px) {
+@media (max-width: 428px), (max-width: 414px), (max-width: 375px) {
   .pokemonHeader {
     flex-direction: column;
     height: auto;

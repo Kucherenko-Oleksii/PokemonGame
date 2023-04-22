@@ -1,9 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import '../../App.scss';
+import axios from 'axios';
 
 export const Popup = ({ isOpen, onClose, pokemon }) => {
+  const [evolvedPokemon, setEvolvedPokemon] = useState([]);
+  const [startPokemon, setStartPokemon] = useState(pokemon);
 
-  const evolvedPokemon = pokemon.evolutions.filter(evo => evo.type === pokemon.type).sort((a,b) => a.level - b.level);
+  const evolutionPokemon = () => {
+    axios.get(`http://localhost:4000/api/pokemons`)
+      .then(response => {
+        const filteredPokemons = response.data.filter(p => p.type === startPokemon.type && p.level > startPokemon.level);
+
+        if (filteredPokemons.length === 0) {
+          const message = document.querySelector('.message');
+          message.style.color = "red";
+          message.innerHTML = `Покемон <strong>${startPokemon.name}</strong> має фінальну стадію еволюції!`;
+          
+          setTimeout(() => {
+            message.innerHTML = '';
+          }, 2000);
+        
+        } else {
+          setStartPokemon(filteredPokemons[0]);
+          setEvolvedPokemon(filteredPokemons.slice(1));
+        }
+      })
+      .catch(error => console.error(error));
+  }
+
+  const evolvePokemonContent = () => {
+    if (evolvedPokemon.length > 0) {
+      return evolvedPokemon.map((p, index) => (
+        <img key={index} src={p.imageUrl} alt={p.name} />
+      ))
+    } else {
+      return (
+        <img src={startPokemon.imageUrl} alt={startPokemon.name} />
+      )
+    }
+  }
 
   return (
     <div className={`popup ${isOpen ? 'popup--open' : ''}`}>
@@ -12,24 +47,26 @@ export const Popup = ({ isOpen, onClose, pokemon }) => {
           X
         </button>
         <div className='evolvePokemon'>
-          {evolvedPokemon.map(evo => {
-            return <img key={evo.id} src={evo.image} alt={evo.name}/>
-          })}
+          {evolvePokemonContent()}
+          <p className='message'></p>
         </div>
         <div className='pokemonDetails'>
-          <h2>{pokemon.name}</h2>
-          <table className='popup'>
+          <h2>{startPokemon.name}</h2>
+          <table className='popup__table'>
             <tbody>
               <tr>
-                <td>Type:</td>
-                <td>{pokemon.type}</td>
+                <td>Type: <span className='valuePokemonTd'>{startPokemon.type}</span></td>
               </tr>
               <tr>
-                <td>Level:</td>
-                <td>{pokemon.level}</td>
+                <td>Level: <span className='valuePokemonTd'>{startPokemon.level}</span></td>
+              </tr>
+              <tr>
+                <td>Abilities: <span className='valuePokemonTd'>{startPokemon.abilities.join(', ')}</span></td>
               </tr>
             </tbody>
           </table>
+          <button className='addToMyList'>Add to My list</button>
+          <button className='evolutionPokemon' onClick={evolutionPokemon}>Evolution Pokemon</button>
         </div>
       </div>
     </div>

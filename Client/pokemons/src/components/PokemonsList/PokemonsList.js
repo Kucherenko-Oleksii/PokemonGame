@@ -14,27 +14,6 @@ export const PokemonsList = () => {
     const [selectedPokemon, setSelectedPokemon] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-    const [evolutions, setEvolutions] = useState([]);
-    const [loadingEvolutions, setLoadingEvolutions] = useState(false);
-    const [errorEvolutions, setErrorEvolutions] = useState(null);
-
-    const handlePokemonSelect = pokemon => {
-        setSelectedPokemon(pokemon);
-        setLoadingEvolutions(true);
-        setErrorEvolutions(null);
-
-        axios.get(`http://localhost:4000/api/evolutions?type=${pokemon.type}`)
-         .then(response => {
-            setEvolutions(response.data);
-            setLoadingEvolutions(false);
-         })
-         .catch(error => {
-            console.error(error);
-            setErrorEvolutions(error);
-            setLoadingEvolutions(false);
-         });
-    };
-
     const handleButtonClick = buttonId => {
       setActiveButton(buttonId);
     };
@@ -113,9 +92,7 @@ export const PokemonsList = () => {
                     </div>
                 ))}
                 {isPopupOpen && selectedPokemon && (
-                    <Popup isOpen={isPopupOpen} onClose={handleClosePopup} pokemon={selectedPokemon} 
-                        evolutions = {evolutions.filter(evo => evo.level > selectedPokemon.level).sort((a, b) => a.level - b.level)}
-                    />
+                    <Popup isOpen={isPopupOpen} onClose={handleClosePopup} pokemon={selectedPokemon} />      
                 )}
             </main>
 
