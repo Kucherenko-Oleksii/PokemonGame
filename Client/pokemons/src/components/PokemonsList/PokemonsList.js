@@ -13,7 +13,7 @@ export const PokemonsList = () => {
 
     const [selectedPokemon, setSelectedPokemon] = useState(null);
     const [isPopupOpen, setIsPopupOpen] = useState(false);
-
+    
     const handleButtonClick = buttonId => {
       setActiveButton(buttonId);
     };
@@ -108,7 +108,7 @@ export const PokemonsList = () => {
                     <button
                         className={`nextButton ${page === 'nextButton' ? 'active' : ''}`}
                         onClick={handleNextClick}
-                        disabled = {!pokemons || pokemons.length < 6}
+                        disabled = {!pokemons || pokemons.length < 6 }
                     >
                         Next
                     </button>
