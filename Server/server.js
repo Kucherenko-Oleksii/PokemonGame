@@ -17,9 +17,6 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', () => console.log('Connected to DataBase :)'));
 
-
-// Пагінація:
-
 app.get("/", cors(), async (req, res) => {
   return res.json({ message: "Hello, World ✌️" });
 });
