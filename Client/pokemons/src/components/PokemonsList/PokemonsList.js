@@ -6,7 +6,7 @@ import {Popup} from './Popup';
 
 export const PokemonsList = () => {
     const [activeButton, setActiveButton] = useState('');
-    const [loading, setLoading] = useState(true); //Стан для завантаження 
+    const [loading, setLoading] = useState(true); 
     const [pokemons, setPokemons] = useState([]);
 
     const [page, setPage] = useState(1);
